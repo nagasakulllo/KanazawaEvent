@@ -1,0 +1,132 @@
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable name="data" type="com.kanazawaevent.view.adapter.BindData"/>
+        <variable name="advt" type="com.kanazawaevent.view.adapter.BindAdvertisement"/>
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginTop="1dp"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="2dp"
+        card_view:cardUseCompatPadding="true"
+        android:onClick="@{data.onItemClicked}">
+
+        <RelativeLayout
+            android:id="@+id/advtsmnt_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:visibility="@{advt.layoutVisibility ? View.VISIBLE : View.GONE}">
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ads:adUnitId="ca-app-pub-7878259110060670/3320662148"
+                ads:adSize="LARGE_BANNER"
+                android:visibility="@{advt.bannerVisibility ? View.VISIBLE : View.GONE}"/>
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/interstitial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/banner"
+                ads:adUnitId="ca-app-pub-7878259110060670/3984653349"
+                ads:adSize="LARGE_BANNER"
+                android:visibility="@{advt.interstitialVisibility ? View.VISIBLE : View.GONE}"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/event_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/advtsmnt_layout"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:visibility="@{advt.bannerVisibility ? View.GONE : View.VISIBLE}">
+
+            <TextView
+                android:id="@+id/group"
+                android:paddingTop="1dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:textStyle="bold"
+                android:textSize="12dp"
+                android:text="@{data.group}"
+                android:textColor="@{data.groupColor}"
+                android:visibility="@{data.hasGroup ? View.VISIBLE : View.GONE}"/>
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/group"
+                android:scaleType="fitCenter"
+                app:imageUrl="@{data.imageUrl}"/>
+
+            <!-- Datesのパースがめんどいので非表示にしておく -->
+            <TextView
+                android:id="@+id/dates"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image"
+                android:layout_marginTop="1dp"
+                android:layout_alignParentLeft="true"
+                android:textSize="10dp"
+                android:text="@{data.dates}"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dates"
+                android:layout_marginTop="1dp"
+                android:layout_alignParentLeft="true"
+                android:textStyle="bold"
+                android:textSize="14dp"
+                android:text="@{data.title}"/>
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title"
+                android:layout_marginTop="1dp"
+                android:layout_alignParentLeft="true"
+                android:textSize="10dp"
+                android:text="@{data.description}"/>
+
+            <!-- Datesのパースがめんどいので非表示にしておく -->
+            <TextView
+                android:id="@+id/url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:layout_marginTop="1dp"
+                android:layout_alignParentLeft="true"
+                android:textSize="7dp"
+                android:text="@{data.url}"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</layout>

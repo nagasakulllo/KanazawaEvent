@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">金沢イベント情報</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="location_all">全施設</string>
+    <string name="location_noh_museum">金沢能楽美術館</string>
+    <string name="location_sosacku_mori">金沢湯涌創作の森</string>
+    <string name="location_utatsu_kogei">金沢卯辰山工芸工房</string>
+    <string name="location_art_village">金沢市民芸術村</string>
+    <string name="location_art_hole">金沢市アートホール</string>
+    <string name="location_bunka_hole">金沢市文化ホール</string>
+    <string name="location_kagekiza">金沢歌劇座</string>
+    <string name="location_kanazawa_arts">金沢芸術創造財団</string>
+    <string name="error_network">ネットワーク状況を確認してください</string>
+
+    <string name="homepage">ホームページ</string>
+    <string name="kanazawa_arts_home">金沢芸術創造財団ホームページへ</string>
+    <string name="kanazawa_official_home">金沢市公式ホームページへ</string>
+    <string name="home_url">http://www.kanazawa-arts.or.jp</string>
+
+    <string name="licence">ライセンス</string>
+    <string name="open_data">オープンデータ</string>
+    <string name="oss">オープンソース</string>
+    <string name="open_data_licence">オープンデータ</string>
+    <string name="oss_licence">オープンソース</string>
+    <string name="now_update">更新中...</string>
+</resources>
