@@ -25,7 +25,7 @@ public class BindData extends BaseObservable {
     private String mDescription;
     private String mUrl;
 
-    private boolean mHasGroup;
+    private int mGroupVisibiility;
     private int mGroupColor;
 
     /**
@@ -53,8 +53,8 @@ public class BindData extends BaseObservable {
         mDescription = eventData.getDescription();
         mUrl = eventData.getBaseUrl() + eventData.getLink();
 
-        mHasGroup = !TextUtils.isEmpty(mGroup);
-        if (mHasGroup) {
+        mGroupVisibiility = !TextUtils.isEmpty(mGroup) ? View.VISIBLE : View.GONE;
+        if (mGroupVisibiility == View.VISIBLE) {
             for (EventLocation location : EventLocation.values()) {
                 if (context.getString(location.getStrId()).equals(mGroup)) {
                     mGroupColor = ColorUtil.getText(context, location.getColor());
@@ -125,12 +125,12 @@ public class BindData extends BaseObservable {
     }
 
     @Bindable
-    public boolean getHasGroup() {
-        return mHasGroup;
+    public int getGroupVisibility() {
+        return mGroupVisibiility;
     }
 
-    public void setHasGroup(boolean hasGroup) {
-        mHasGroup = hasGroup;
+    public void setGroupVisibility(int visibility) {
+        mGroupVisibiility = visibility;
     }
 
     @Bindable
