@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.kanazawaevent.R;
 import com.kanazawaevent.model.event.EventLocation;
 import com.kanazawaevent.model.event.TimeLineManager;
+import com.kanazawaevent.model.event.TimeLineManager.ShowTimeLineListener;
 import com.kanazawaevent.view.adapter.RecyclerViewAdapter;
 import com.kanazawaevent.view.util.ColorUtil;
 
@@ -64,15 +65,30 @@ public class PlaceholderFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onPause() {
+        mManager.onFragmentPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        mManager.onFragmentDestroy();
+        mRecyclerView.setAdapter(null);
+        mRecyclerView = null;
+
+        super.onDestroyView();
+    }
+
     public void onActivityResume() {
         if (mManager != null) {
-            mManager.startExecutor();
+            mManager.onActivityResume();
         }
     }
 
     public void onActivityPause() {
         if (mManager != null) {
-            mManager.stopExecutor();
+            mManager.onActivityPause();
         }
     }
 
@@ -80,18 +96,29 @@ public class PlaceholderFragment extends Fragment {
      * タイムラインの表示
      */
     public void showTimeLine(boolean isDataClear) {
+        if (mManager == null) {
+            return;
+        }
+
         setRefleshLayoutEnabled(true);
 
         if (isDataClear) {
             mManager.clear();
         }
 
-        if (!mManager.show()) {
-            Toast toast = Toast.makeText(getContext(), R.string.error_network, Toast.LENGTH_SHORT);
-            toast.show();
-        }
+        ShowTimeLineListener listener = new ShowTimeLineListener() {
+            @Override
+            public void onShow(boolean result) {
+                if (!result) {
+                    Toast toast = Toast.makeText(getContext(), R.string.error_network, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
 
-        setRefleshLayoutEnabled(false);
+                setRefleshLayoutEnabled(false);
+            }
+        };
+
+        mManager.show(listener);
     }
 
     /**
@@ -131,6 +158,10 @@ public class PlaceholderFragment extends Fragment {
     }
 
     private void setRefleshLayoutEnabled(boolean isEnaled) {
+        if (mSwipeRefreshLayout == null) {
+            return;
+        }
+
         if (mSwipeRefreshLayout.isRefreshing() == !isEnaled) {
             mSwipeRefreshLayout.setRefreshing(isEnaled);
         }

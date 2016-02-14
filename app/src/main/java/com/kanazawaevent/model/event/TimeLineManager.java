@@ -1,10 +1,13 @@
 package com.kanazawaevent.model.event;
 
 import android.content.Context;
+import android.os.Handler;
 
 import com.kanazawaevent.view.adapter.RecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by nagai on 2016/02/07.
@@ -34,20 +37,34 @@ public class TimeLineManager {
 
     /**
      * タイムラインの表示
-     *
-     * @return boolean
      */
-    public boolean show() {
-        // タイムライン取得
-        EventLoader loader = new EventLoader(mLocation);
-        ArrayList<EventData> eventList = loader.load(mContext);
-        if (eventList.size() > 0) {
-            mAdapter.setData(eventList);
-            return true;
-        }
+    public void show(final ShowTimeLineListener listener) {
+        final Handler handler = new Handler();
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        // データなしの場合はtrueにする
-        return loader.getError() == EventLoader.Error.NO_DATA;
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                // タイムライン取得
+                final EventLoader loader = new EventLoader(mLocation);
+                final ArrayList<EventData> eventList = loader.load(mContext);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (eventList.size() > 0) {
+                            if (mAdapter != null) {
+                                mAdapter.setData(eventList);
+                            }
+                            listener.onShow(true);
+                        } else {
+                            listener.onShow(loader.getError() == EventLoader.Error.NO_DATA);
+                        }
+                    }
+                });
+            }
+        });
+
+        executor.shutdown();
     }
 
     /**
@@ -61,11 +78,29 @@ public class TimeLineManager {
         db.deleteLocationData(mLocation);
     }
 
-    public void startExecutor() {
-        mAdapter.startExecutor();
+    public void onActivityResume() {
+        if (mAdapter != null) {
+            mAdapter.onActivityResume();
+        }
     }
 
-    public void stopExecutor() {
-        mAdapter.stopExecutor();
+    public void onActivityPause() {
+        if (mAdapter != null) {
+            mAdapter.onActivityPause();
+        }
+    }
+
+    public void onFragmentPause() {
+        if (mAdapter != null) {
+            mAdapter.onFragmentPause();
+        }
+    }
+
+    public void onFragmentDestroy() {
+        mAdapter = null;
+    }
+
+    public interface ShowTimeLineListener {
+        void onShow(boolean result);
     }
 }

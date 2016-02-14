@@ -57,9 +57,10 @@ public class NetworkUtil {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        } finally {
+            exeServ.shutdown();
         }
 
-        exeServ.shutdown();
         return result;
     }
 

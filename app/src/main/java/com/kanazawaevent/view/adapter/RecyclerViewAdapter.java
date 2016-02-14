@@ -29,35 +29,43 @@ import java.util.concurrent.Executors;
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ItemViewHolder> {
     // スレッド3つ
-    private static ExecutorService sExecutorService = Executors.newFixedThreadPool(3);;
+    private static ExecutorService sExecutorService = Executors.newFixedThreadPool(3);
     private static Handler sHandler = new Handler();
 
     private ArrayList<EventData> mDataset;
-
-    /**
-     * ViewHolder
-     */
-    public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        // Bindデータ
-        public ViewDataBinding mBinding;
-        public AdView mBanner;
-        public AdView mInterstitial;
-        public ImageView mImage;
-
-        public ItemViewHolder(View v) {
-            super(v);
-            mBinding = DataBindingUtil.bind(v);
-            mBanner = (AdView) v.findViewById(R.id.banner);
-            mInterstitial = (AdView) v.findViewWithTag(R.id.interstitial);
-            mImage = (ImageView) v.findViewById(R.id.image);
-        }
-    }
 
     /**
      * コンストラクタ
      */
     public RecyclerViewAdapter() {
         mDataset = new ArrayList<>();
+    }
+
+    @BindingAdapter({"bind:imageUrl"})
+    public static void loadImage(final ImageView view, final String url) {
+        final java.lang.Object tag = url;
+        view.setTag(tag);
+        view.setVisibility(View.VISIBLE);
+
+        if (TextUtils.isEmpty(url)) {
+            view.setVisibility(View.GONE);
+            return;
+        }
+
+        sExecutorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                if (!tag.equals(view.getTag())) {
+                    // 既に画面外なら何もしない
+                    return;
+                }
+
+                ImageLoadFlow flow = new ImageLoadFlow(url);
+                ArrayList<Bitmap> bmpList = flow.load(view.getContext().getApplicationContext());
+                ImageAdapter adapter = new ImageAdapter(view, tag, bmpList);
+                adapter.execute();
+            }
+        });
     }
 
     @Override
@@ -107,17 +115,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mDataset.size();
     }
 
-    public void startExecutor() {
+    public void onActivityResume() {
         if (sExecutorService == null || sExecutorService.isShutdown()) {
             sExecutorService = Executors.newFixedThreadPool(3);
         }
     }
 
-    public void stopExecutor() {
+    public void onActivityPause() {
         sHandler.removeCallbacksAndMessages(null);
         if (sExecutorService != null && !sExecutorService.isShutdown()) {
             sExecutorService.shutdownNow();
         }
+    }
+
+    public void onFragmentPause() {
+        sHandler.removeCallbacksAndMessages(null);
     }
 
     public void setData(ArrayList<EventData> dataset) {
@@ -149,35 +161,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         notifyDataSetChanged();
     }
 
-    @BindingAdapter({"bind:imageUrl"})
-    public static void loadImage(final ImageView view, final String url) {
-        final java.lang.Object tag = url;
-        view.setTag(tag);
-        view.setVisibility(View.VISIBLE);
+    /**
+     * ViewHolder
+     */
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
+        // Bindデータ
+        public ViewDataBinding mBinding;
+        public AdView mBanner;
+        public AdView mInterstitial;
+        public ImageView mImage;
 
-        if (TextUtils.isEmpty(url)) {
-            view.setVisibility(View.GONE);
-            return;
+        public ItemViewHolder(View v) {
+            super(v);
+            mBinding = DataBindingUtil.bind(v);
+            mBanner = (AdView) v.findViewById(R.id.banner);
+            mInterstitial = (AdView) v.findViewWithTag(R.id.interstitial);
+            mImage = (ImageView) v.findViewById(R.id.image);
         }
-
-        sExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                if (!tag.equals(view.getTag())) {
-                    // 既に画面外なら何もしない
-                    return;
-                }
-
-                ImageLoadFlow flow = new ImageLoadFlow(url);
-                ArrayList<Bitmap> bmpList = flow.load(view.getContext().getApplicationContext());
-                ImageAdapter adapter = new ImageAdapter(view, tag, bmpList);
-                adapter.execute();
-            }
-        });
     }
 
     private static class ImageAdapter {
-        private static final int DELAYED = 5000;
+        private static final int DELAYED = 3000;
 
         private ImageView mView;
         private java.lang.Object mTag;
