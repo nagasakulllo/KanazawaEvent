@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kanazawaevent.R;
 import com.kanazawaevent.view.activity.viewpager.PageChangeListener;
 import com.kanazawaevent.view.activity.viewpager.PlaceholderFragment;
@@ -121,22 +122,32 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        String analyticsName = null;
         switch (item.getItemId()) {
             case R.id.kanazawa_arts:
                 postIntent(URL_KANAZAWA_ARTS);
+                analyticsName = "kanazawa_arts";
                 break;
             case R.id.kanazawa_official:
                 postIntent(URL_KANAZAWA_OFFICIAL);
+                analyticsName = "kanazawa_official";
                 break;
             case R.id.open_data:
                 showLicenceDialog(R.string.open_data_licence, URL_OPENDATA);
+                analyticsName = "open_data_license";
                 break;
             case R.id.oss:
                 showLicenceDialog(R.string.oss_licence, URL_OSS);
+                analyticsName = "oss_license";
                 break;
             default:
                 break;
+        }
+
+        if (analyticsName != null) {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.ITEM_NAME, analyticsName);
+            mFirebaseAnalytics.logEvent("select_navigation_content", params);
         }
 
         return super.onNavigationItemSelected(item);

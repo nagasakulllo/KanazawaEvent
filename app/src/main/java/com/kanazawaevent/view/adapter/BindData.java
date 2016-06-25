@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kanazawaevent.BR;
 import com.kanazawaevent.model.event.EventData;
 import com.kanazawaevent.model.event.EventLocation;
@@ -28,6 +30,7 @@ public class BindData extends BaseObservable {
     private int mGroupVisibiility;
     private int mGroupColor;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     /**
      * コンストラクタ
      *
@@ -62,6 +65,8 @@ public class BindData extends BaseObservable {
                 }
             }
         }
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
     @Bindable
@@ -149,5 +154,11 @@ public class BindData extends BaseObservable {
 
         Activity activity = (Activity) view.getContext();
         activity.startActivity(intent);
+
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.LOCATION, mGroup);
+        params.putString(FirebaseAnalytics.Param.ITEM_NAME, mTitle);
+        params.putString(FirebaseAnalytics.Param.VALUE, mUrl);
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, params);
     }
 }

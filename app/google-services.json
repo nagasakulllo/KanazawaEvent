@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "752169436834",
+    "firebase_url": "https://kanazawaevent.firebaseio.com",
+    "project_id": "kanazawaevent",
+    "storage_bucket": "kanazawaevent.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752169436834:android:c8fd4dcb69f5658c",
+        "android_client_info": {
+          "package_name": "com.kanazawaevent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752169436834-cmdd8n95d98jfp2rkdsa21mslfra9nfk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiYffuWEFsq10xLiFXpxMbmARdFGu7TPM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
