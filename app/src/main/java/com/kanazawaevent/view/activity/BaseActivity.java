@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kanazawaevent.BuildConfig;
 import com.kanazawaevent.R;
 
@@ -28,6 +29,8 @@ public abstract class BaseActivity extends AppCompatActivity
     protected boolean mToolBarEnabled;
     protected boolean mFabEnabled;
     protected boolean mNavigationViewEnabled;
+
+    protected FirebaseAnalytics mFirebaseAnalytics;
 
     abstract int getLayoutId();
     abstract int getNavViewId();
@@ -90,6 +93,8 @@ public abstract class BaseActivity extends AppCompatActivity
                 }
             }
         });
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     @Override
