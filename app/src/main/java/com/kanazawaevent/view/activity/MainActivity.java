@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kanazawaevent.R;
 import com.kanazawaevent.view.activity.viewpager.PageChangeListener;
@@ -98,6 +99,8 @@ public class MainActivity extends BaseActivity {
                 return false;
             }
         });
+
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7878259110060670~6413729342");
     }
 
     @Override
