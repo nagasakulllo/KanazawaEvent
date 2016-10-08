@@ -1,5 +1,6 @@
 package com.kanazawaevent.view.activity.viewpager;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,12 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.kanazawaevent.BR;
 import com.kanazawaevent.R;
+import com.kanazawaevent.databinding.FragmentMainBinding;
 import com.kanazawaevent.model.event.EventLocation;
 import com.kanazawaevent.model.event.TimeLineManager;
 import com.kanazawaevent.model.event.TimeLineManager.ShowTimeLineListener;
+import com.kanazawaevent.view.adapter.BindAdvertisement;
 import com.kanazawaevent.view.adapter.RecyclerViewAdapter;
 import com.kanazawaevent.view.util.ColorUtil;
+
+import java.util.Random;
 
 /**
  * Created by nagai on 2016/02/07.
@@ -25,6 +33,9 @@ public class PlaceholderFragment extends Fragment {
     // UIアイテム
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private AdView mBanner;
+    private AdView mInterstitial;
+    FragmentMainBinding mBinding;
 
     private StaggeredGridLayoutManager mLayoutManager;
     private EventLocation mLocation;
@@ -50,7 +61,8 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false);
+        View rootView = mBinding.getRoot();
         Bundle bundle = getArguments();
         mLocation = (EventLocation) bundle.getSerializable(KEY_LOCATION);
 
@@ -139,6 +151,23 @@ public class PlaceholderFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter();
         mRecyclerView.setAdapter(adapter);
+
+        mBanner = (AdView) view.findViewById(R.id.banner);
+        mInterstitial = (AdView) view.findViewById(R.id.interstitial);
+
+        // 広告の処理
+        BindAdvertisement bindAdvertisement = new BindAdvertisement();
+        // 広告ロード
+        AdRequest adRequest = new AdRequest.Builder().build();
+        Random random = new Random();
+//        if (random.nextBoolean()) {
+//            bindAdvertisement.setInterstitialVisibility(true);
+//            mInterstitial.loadAd(adRequest);
+//        } else {
+            bindAdvertisement.setBannerVisibility(true);
+            mBanner.loadAd(adRequest);
+//        }
+        mBinding.setVariable(BR.advt, bindAdvertisement);
     }
 
     /**

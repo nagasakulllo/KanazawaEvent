@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.kanazawaevent.BR;
 import com.kanazawaevent.R;
 import com.kanazawaevent.model.event.EventData;
@@ -41,7 +39,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         mDataset = new ArrayList<>();
     }
 
-    @BindingAdapter({"bind:imageUrl"})
+    @BindingAdapter({"imageUrl"})
     public static void loadImage(final ImageView view, final String url) {
         final java.lang.Object tag = url;
         view.setTag(tag);
@@ -78,7 +76,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         StaggeredGridLayoutManager.LayoutParams layoutParams =
                 (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
-        BindAdvertisement bindAdvertisement = new BindAdvertisement();
         EventData data = mDataset.get(position);
         if (data != null) {
             // イベント情報の場合
@@ -88,25 +85,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             BindData bindData = new BindData(data, holder.mBinding.getRoot().getContext());
             holder.mBinding.setVariable(BR.data, bindData);
-        } else {
-            // 広告
-            layoutParams.setFullSpan(true);
-            // タグだけImageViewにセット
-            holder.mImage.setTag(position);
-
-            // 広告ロード
-            AdRequest adRequest = new AdRequest.Builder()
-                    .build();
-            if (position == getItemCount()) {
-                bindAdvertisement.setInterstitialVisibility(true);
-                holder.mInterstitial.loadAd(adRequest);
-            } else {
-                bindAdvertisement.setBannerVisibility(true);
-                holder.mBanner.loadAd(adRequest);
-            }
         }
 
-        holder.mBinding.setVariable(BR.advt, bindAdvertisement);
         holder.mBinding.executePendingBindings();
     }
 
@@ -136,13 +116,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         if (dataset != null) {
             mDataset.clear();
             mDataset = dataset;
-
-            for (int i = 1; 10 * i <= mDataset.size(); i++) {
-                // 途中にBannerを入れる
-                mDataset.add(10 * i - 1, null);
-            }
-            // 最後にInterstitialを入れる
-            //mDataset.add(null);
             notifyDataSetChanged();
         }
     }
@@ -167,15 +140,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         // Bindデータ
         public ViewDataBinding mBinding;
-        public AdView mBanner;
-        public AdView mInterstitial;
         public ImageView mImage;
 
         public ItemViewHolder(View v) {
             super(v);
             mBinding = DataBindingUtil.bind(v);
-            mBanner = (AdView) v.findViewById(R.id.banner);
-            mInterstitial = (AdView) v.findViewWithTag(R.id.interstitial);
             mImage = (ImageView) v.findViewById(R.id.image);
         }
     }
