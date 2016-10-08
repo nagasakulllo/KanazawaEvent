@@ -1,12 +1,11 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <import type="android.view.View"/>
         <variable name="data" type="com.kanazawaevent.view.adapter.BindData"/>
-        <variable name="advt" type="com.kanazawaevent.view.adapter.BindAdvertisement"/>
     </data>
 
     <android.support.v7.widget.CardView
@@ -19,49 +18,16 @@
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="2dp"
         card_view:cardUseCompatPadding="true"
-        android:onClick="@{data.onItemClicked}">
-
-        <RelativeLayout
-            android:id="@+id/advtsmnt_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:visibility="@{advt.layoutVisibility ? View.VISIBLE : View.GONE}">
-
-            <com.google.android.gms.ads.AdView
-                xmlns:ads="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/banner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                ads:adUnitId="ca-app-pub-7878259110060670/3320662148"
-                ads:adSize="LARGE_BANNER"
-                android:visibility="@{advt.bannerVisibility ? View.VISIBLE : View.GONE}"/>
-
-            <com.google.android.gms.ads.AdView
-                xmlns:ads="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/interstitial"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/banner"
-                ads:adUnitId="ca-app-pub-7878259110060670/3984653349"
-                ads:adSize="LARGE_BANNER"
-                android:visibility="@{advt.interstitialVisibility ? View.VISIBLE : View.GONE}"/>
-        </RelativeLayout>
+        android:onClick="@{data::onItemClicked}">
 
         <RelativeLayout
             android:id="@+id/event_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/advtsmnt_layout"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:visibility="@{advt.bannerVisibility ? View.GONE : View.VISIBLE}">
+            android:layout_marginBottom="2dp" >
 
             <TextView
                 android:id="@+id/group"
