@@ -54,7 +54,11 @@ public class BindData extends BaseObservable {
         mTitle = eventData.getTitle();
         mDates = eventData.getDates();
         mDescription = eventData.getDescription();
-        mUrl = eventData.getBaseUrl() + eventData.getLink();
+
+        // オープンデータの仕様が変わってALLのときはLinkの値ををそのまま使う
+        mUrl = eventData.getLocation() == EventLocation.ALL
+                ? eventData.getLink()
+                : eventData.getBaseUrl() + eventData.getLink();
 
         mGroupVisibiility = !TextUtils.isEmpty(mGroup) ? View.VISIBLE : View.GONE;
         if (mGroupVisibiility == View.VISIBLE) {
